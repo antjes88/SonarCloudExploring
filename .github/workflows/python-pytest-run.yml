@@ -81,3 +81,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Check Quality Gate
+        run: |
+          response=$(curl --silent -X GET -u $SONAR_TOKEN: "$SONAR_HOST_URL/api/qualitygates/project_status?projectKey=$SONAR_PROJECT_KEY")
+          status=$(echo $response | jq --raw-output '.projectStatus.status')
+          name=$(echo $response | jq --raw-output '.projectStatus.qualityGate.name')
+          if [[ "$status" != "OK" ]]; then
+            echo "Quality Gate failed: $status - $name"
+            exit 1
+          else
+            echo "Quality Gate passed: $name"
+          fi
