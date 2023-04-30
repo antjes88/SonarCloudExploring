@@ -26,7 +26,11 @@ jobs:
           python -m pip install pytest==7.3.1
       - name: Test with pytest
         run: |
-          python -m pytest -vv
+          python -m pytest -vv --junitxml="xunit-result.xml"
+      - uses: actions/upload-artifact@v2
+        with:
+          name: pytest-results
+          path: pytest-results.xml
 
 
   sonarcloud:
@@ -48,7 +52,7 @@ jobs:
           pip install pytest==7.3.1
           pip install pytest-cov==4.0.0
       - name: Running pytest
-        run: python -m pytest -vv --cov --cov-report="xml:./coverage.xml" --junitxml="xunit-result.xml" || true
+        run: python -m pytest -vv --cov --cov-report="xml:coverage.xml" || true
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
