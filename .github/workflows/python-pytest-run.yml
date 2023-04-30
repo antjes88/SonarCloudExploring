@@ -26,8 +26,8 @@ jobs:
           python -m pip install pytest==7.3.1
       - name: Test with pytest
         run: |
-          python -m pytest -vv --junitxml="xunit-result.xml"
-      - uses: actions/upload-artifact@v2
+          python -m pytest -vv --junitxml="pytest-results.xml"
+      - uses: actions/upload-artifact@v3
         with:
           name: pytest-results
           path: pytest-results.xml

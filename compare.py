@@ -31,3 +31,16 @@ class PandasDataframeComparison:
                 f.write("Dataframes are equal")
             else:
                 f.write("Dataframes are not equal")
+
+    def get_missing_columns(self):
+        """
+        Method that returns as list the columns from left df that are not present on right df and vice-versa.
+
+        Returns:
+            - list of columns from left df that are not present on right df
+            - list of columns from right df that are not present on left df
+        """
+        left_missing_columns = set(self.df_left.columns) - set(self.df_right.columns)
+        right_missing_columns = set(self.df_right.columns) - set(self.df_left.columns)
+
+        return list(left_missing_columns), list(right_missing_columns)
