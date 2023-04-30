@@ -31,7 +31,7 @@ jobs:
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
-    needs: test
+#    needs: test
     steps:
       - uses: actions/checkout@v3
         with:
@@ -39,7 +39,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v3
         with:
-          python-version: ${{ matrix.python }}
+          python-version: 3.9
       - name: Install tox and any other packages
         run: pip install tox
       - name: Run tox
