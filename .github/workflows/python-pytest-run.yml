@@ -1,4 +1,4 @@
-name: Pytest
+name: Test
 
 on:
   push:
@@ -7,32 +7,36 @@ on:
       - main
 jobs:
 
-#  test:
-#    runs-on: ubuntu-latest
-#    strategy:
-#      matrix:
-#        python-version: ['3.8', '3.9']
-#      max-parallel: 1   # they are using the same database that should be access sequentially,
-#    steps:
-#      - uses: actions/checkout@v3
-#      - name: Set up Python ${{ matrix.python-version }}
-#        uses: actions/setup-python@v3
-#        with:
-#          python-version: ${{ matrix.python-version }}
-#      - name: Install dependencies
-#        run: |
-#          python -m pip install --upgrade pip
-#          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-#          python -m pip install pytest==7.3.1
-#      - name: Test with pytest
-#        run: |
-#          python -m pytest -vv
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.8']
+      max-parallel: 1   # they are using the same database that should be access sequentially,
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          python -m pip install pytest==7.3.1
+      - name: Test with pytest
+        run: |
+          python -m pytest -vv --junitxml="pytest-results.xml"
+      - uses: actions/upload-artifact@v3
+        with:
+          name: pytest-results
+          path: pytest-results.xml
 
 
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
-#    needs: test
+    needs: test
     steps:
       - uses: actions/checkout@v3
         with:
@@ -40,7 +44,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v3
         with:
-          python-version: 3.9
+          python-version: 3.8
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -48,15 +52,9 @@ jobs:
           pip install pytest==7.3.1
           pip install pytest-cov==4.0.0
       - name: Running pytest
-        run: python -m pytest -vv --cov --cov-report="xml:./coverage.xml" --junitxml="xunit-result.xml" || true
-#      - uses: actions/upload-artifact@v3
-#        with:
-#          name: code-coverage
-#          path: htmlcov
-#      - uses: actions/upload-artifact@v3
-#        with:
-#          name: xunit-result
-#          path: xunit-result.xml
+        run: | 
+          python -m pytest -vv --cov --cov-report="xml:coverage.xml" --cov-report=html || true
+          coverage xml -i
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
