@@ -52,7 +52,9 @@ jobs:
           pip install pytest==7.3.1
           pip install pytest-cov==4.0.0
       - name: Running pytest
-        run: python -m pytest -vv --cov --cov-report="xml:coverage.xml" --cov-report=html || true
+        run: | 
+          python -m pytest -vv --cov --cov-report="xml:coverage.xml" --cov-report=html || true
+          coverage xml -i
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
