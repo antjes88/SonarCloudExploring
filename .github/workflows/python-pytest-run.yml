@@ -19,14 +19,22 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
+#      - name: Install dependencies
+#        run: |
+#          python -m pip install --upgrade pip
+#          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+#          python -m pip install pytest==7.3.1
+#      - name: Test with pytest
+#        run: |
+#          python -m pytest -vv --junitxml="pytest-results.xml"
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          python -m pip install pytest==7.3.1
-      - name: Test with pytest
-        run: |
-          python -m pytest -vv --junitxml="pytest-results.xml"
+          pip install pytest==7.3.1
+          pip install pytest-cov==4.0.0
+      - name: Running pytest
+        run: python -m pytest -vv --cov --cov-report="xml:coverage.xml" --junitxml="pytest-results.xml"
       - uses: actions/upload-artifact@v3
         with:
           name: pytest-results
@@ -45,14 +53,14 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: 3.8
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          pip install pytest==7.3.1
-          pip install pytest-cov==4.0.0
-      - name: Running pytest
-        run: python -m pytest -vv --cov --cov-report="xml:coverage.xml" || true
+#      - name: Install dependencies
+#        run: |
+#          python -m pip install --upgrade pip
+#          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+#          pip install pytest==7.3.1
+#          pip install pytest-cov==4.0.0
+#      - name: Running pytest
+#        run: python -m pytest -vv --cov --cov-report="xml:coverage.xml" || true
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
