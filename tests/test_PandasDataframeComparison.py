@@ -55,7 +55,3 @@ def test_write_report(df_left, df_right, report_file_path_to_compare, reboot_fil
     comparison.write_report(reboot_file_path)
 
     assert filecmp.cmp(report_file_path_to_compare, reboot_file_path)
-
-
-def test_fails():
-    assert False
